@@ -7,7 +7,7 @@ on:
   # # run it during pull request
   # pull_request:
   # create:
-  #   tags:
+  #   tags:#
   #     - '*'
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
