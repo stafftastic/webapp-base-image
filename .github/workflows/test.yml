@@ -65,7 +65,7 @@ jobs:
       with:
         # relative path to the place where source code with Dockerfile is located
         context: .
-        # Note: tags has to be all lower-case
+        # Note: tags has to be all lower-case#
         tags: | 
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
