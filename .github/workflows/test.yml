@@ -19,7 +19,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        DockerFiles: [yarn-3.2.0-node-16.13.Dockerfile , yarn-3.2.0-node-16.14.Dockerfile]
+        DockerFiles: [ yarn-3.2.0-node-16.14.Dockerfile]
     steps:
 
 
@@ -50,9 +50,6 @@ jobs:
     - run: |
         cat ${{ github.workspace }}/gha-creds-*.json  | docker login -u ${{ env.GKE_KEY_TPE }}  --password-stdin https://${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}
 
-
-
-
     - name: Branch name
       id: extract_branch_name
       run: |
@@ -70,7 +67,7 @@ jobs:
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
         # build on feature branches, push only on main branch
-        push:  true      ###${{ github.ref == 'refs/heads/main' }}
+        push:  true      
         file: ${{ matrix.DockerFiles }}
 
 
@@ -78,23 +75,6 @@ jobs:
 
 
 
-
-    # - name: create the helm package and env vars  and push it 
-    #   run: |
-    #     export CHART_NAME=`yq '.name' ${{ github.workspace }}/helm/Chart.yaml`  
-    #     export CHART_VERSION=`yq '.version' ${{ github.workspace }}/helm/Chart.yaml`  
-    #     export CHART_APP_VERSION=`yq '.appVersion' ${{ github.workspace }}/helm/Chart.yaml`  
-    #     helm  package ${{ github.workspace }}/helm/  --app-version ${CHART_APP_VERSION} --version ${SOURCE_TAG}  ## git tags have to be semantic
-    #     ls -alh
-    #     echo "`pwd`"
-    #     helm  push ${{ github.workspace }}/${CHART_NAME}-${SOURCE_TAG}.tgz  oci://${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT }}/${{ env.PROJECT_ID }}/${{ env.GKE_ARTIFACTS_REPO }}/
-    #     echo ${GITHUB_REF} 
-    #     echo ${GITHUB_REF_NAME}	
-    #     echo ${GITHUB_REF_TYPE}	
-    #   env:
-    #     SOURCE_NAME: ${{ steps.extract_branch_name.outputs.SOURCE_NAME }}
-    #     SOURCE_BRANCH: ${{ steps.extract_branch_name.outputs.SOURCE_BRANCH }}
-    #     SOURCE_TAG: ${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
 
 
 
