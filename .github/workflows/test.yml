@@ -61,8 +61,8 @@ jobs:
         context: .
         # Note: tags has to be all lower-case
         tags: | 
-              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ GKE_ARTIFACTS_REPO }}/${{ matrix.DockerFiles }}:test1
-              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ GKE_ARTIFACTS_REPO }}/${{ matrix.DockerFiles }}:latest
+              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ matrix.DockerFiles }}:test1
+              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ matrix.DockerFiles }}:latest
         # build on feature branches, push only on main branch
         push:  true      ###${{ github.ref == 'refs/heads/main' }}
         file: ${{ matrix.DockerFiles }}
