@@ -57,31 +57,7 @@ jobs:
       uses: docker/build-push-action@v2
       with:
         context: .
-        # Note: tags has to be all lower-case#
         tags: | 
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
         push:  true      
         file: ${{ matrix.DockerFiles }}
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
