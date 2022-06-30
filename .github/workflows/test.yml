@@ -12,9 +12,6 @@ on:
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   REGION: europe-west3
-  HELM_EXPERIMENTAL_OCI: 1 
-  HELM_VERSION_TO_INSTALL: 3.8.1 
-  CT_CHART_DIRS: ./helm/
   GKE_KEY_TPE:  _json_key 
   GKE_ARTIFACTS_REPO: images
   GKE_DOCKER_ENDPOINT: docker.pkg.dev
@@ -65,7 +62,7 @@ jobs:
         # Note: tags has to be all lower-case
         tags: test
         # build on feature branches, push only on main branch
-        push: ${{ github.ref == 'refs/heads/main' }}
+        push:  true      ###${{ github.ref == 'refs/heads/main' }}
         file: ${{ matrix.DockerFiles }}
 
     - name: Image digest
