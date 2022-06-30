@@ -1,10 +1,9 @@
-name: Build and publish to Google artifacts a helm chart from helm folder
+name: Build and publish the app 
 
 on:
-  # run it on push to the default repository branch
   create:
     tags:
-      - '*'
+      - 'v*.*.*'
 env:
   PROJECT_ID: ${{ secrets.GKE_PROJECT }}
   REGION: europe-west3
@@ -21,12 +20,9 @@ jobs:
       matrix:
         DockerFiles: [ yarn-3.2.0-node-16.14.Dockerfile]
     steps:
-
-
     - name: Checkout
       uses: actions/checkout@v3
 
-      # setup Docker buld action
     - name: Set up Docker Buildx
       id: buildx
       uses: docker/setup-buildx-action@v1
@@ -44,7 +40,7 @@ jobs:
          gcloud auth configure-docker --quiet
          gcloud auth configure-docker ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT }} --quiet
       name: auth docker to registry 
-    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+
     - name: 'Set up Cloud SDK and login to acr using helm'
       uses: 'google-github-actions/setup-gcloud@v0'    
     - run: |
@@ -60,13 +56,10 @@ jobs:
     - name: Build image and push to Docker Hub and GitHub Container Registry
       uses: docker/build-push-action@v2
       with:
-        # relative path to the place where source code with Dockerfile is located
         context: .
         # Note: tags has to be all lower-case#
         tags: | 
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
-              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
-        # build on feature branches, push only on main branch
         push:  true      
         file: ${{ matrix.DockerFiles }}
 
