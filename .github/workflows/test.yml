@@ -1,0 +1,119 @@
+name: Build and publish to Google artifacts a helm chart from helm folder
+
+on:
+  # run it on push to the default repository branch
+  push:
+    branches: [main]
+  # run it during pull request
+  pull_request:
+  create:
+    tags:
+      - '*'
+env:
+  PROJECT_ID: ${{ secrets.GKE_PROJECT }}
+  REGION: europe-west3
+  HELM_EXPERIMENTAL_OCI: 1 
+  HELM_VERSION_TO_INSTALL: 3.8.1 
+  CT_CHART_DIRS: ./helm/
+  GKE_KEY_TPE:  _json_key 
+  GKE_ARTIFACTS_REPO: images
+  GKE_DOCKER_ENDPOINT: docker.pkg.dev
+
+jobs:
+  setup-build-publish-deploy:
+    name: build and push base image 
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        DockerFiles: [yarn-3.2.0-node-16.13.Dockerfile , yarn-3.2.0-node-16.14.Dockerfile]
+    steps:
+
+
+    - name: Checkout
+      uses: actions/checkout@v3
+
+      # setup Docker buld action
+    - name: Set up Docker Buildx
+      id: buildx
+      uses: docker/setup-buildx-action@v1
+
+    - uses: google-github-actions/auth@v0.7.3
+      with:
+        credentials_json: ${{ secrets.GKE_ARTIFACTS_SA__KEY }}
+        create_credentials_file: True
+        cleanup_credentials: True
+
+    - name: 'Set up Cloud SDK'
+      uses: 'google-github-actions/setup-gcloud@v0'    
+      
+    - run: |-
+         gcloud auth configure-docker --quiet
+         gcloud auth configure-docker ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT }} --quiet
+      name: auth docker to registry 
+    # Install gcloud, `setup-gcloud` automatically picks up authentication from `auth`.
+    - name: 'Set up Cloud SDK and login to acr using helm'
+      uses: 'google-github-actions/setup-gcloud@v0'    
+    - run: |
+        cat ${{ github.workspace }}/gha-creds-*.json  | docker login -u ${{ env.GKE_KEY_TPE }}  --password-stdin https://${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}
+
+
+    - name: Build image and push to Docker Hub and GitHub Container Registry
+      uses: docker/build-push-action@v2
+      with:
+        # relative path to the place where source code with Dockerfile is located
+        context: .
+        # Note: tags has to be all lower-case
+        tags: test
+        # build on feature branches, push only on main branch
+        push: ${{ github.ref == 'refs/heads/main' }}
+        file: ${{ matrix.DockerFiles }}
+
+    - name: Image digest
+      run: echo ${{ steps.docker_build.outputs.digest }}
+
+
+
+
+
+    # - name: Branch name
+    #   id: extract_branch_name
+    #   run: |
+    #     echo ::set-output name=SOURCE_NAME::${GITHUB_REF#refs/*/}
+    #     echo ::set-output name=SOURCE_BRANCH::${GITHUB_REF#refs/heads/}
+    #     echo ::set-output name=SOURCE_TAG::${GITHUB_REF#refs/tags/}
+
+
+
+    # - name: create the helm package and env vars  and push it 
+    #   run: |
+    #     export CHART_NAME=`yq '.name' ${{ github.workspace }}/helm/Chart.yaml`  
+    #     export CHART_VERSION=`yq '.version' ${{ github.workspace }}/helm/Chart.yaml`  
+    #     export CHART_APP_VERSION=`yq '.appVersion' ${{ github.workspace }}/helm/Chart.yaml`  
+    #     helm  package ${{ github.workspace }}/helm/  --app-version ${CHART_APP_VERSION} --version ${SOURCE_TAG}  ## git tags have to be semantic
+    #     ls -alh
+    #     echo "`pwd`"
+    #     helm  push ${{ github.workspace }}/${CHART_NAME}-${SOURCE_TAG}.tgz  oci://${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT }}/${{ env.PROJECT_ID }}/${{ env.GKE_ARTIFACTS_REPO }}/
+    #     echo ${GITHUB_REF} 
+    #     echo ${GITHUB_REF_NAME}	
+    #     echo ${GITHUB_REF_TYPE}	
+    #   env:
+    #     SOURCE_NAME: ${{ steps.extract_branch_name.outputs.SOURCE_NAME }}
+    #     SOURCE_BRANCH: ${{ steps.extract_branch_name.outputs.SOURCE_BRANCH }}
+    #     SOURCE_TAG: ${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
