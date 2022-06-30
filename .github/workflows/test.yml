@@ -68,7 +68,7 @@ jobs:
         # Note: tags has to be all lower-case
         tags: | 
               ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
-              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_BRANCH }}-${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
+              ${{ env.REGION }}-${{ env.GKE_DOCKER_ENDPOINT}}/${{ secrets.GKE_PROJECT }}/${{ env.GKE_ARTIFACTS_REPO }}/${{ env.IMAGE_NAME }}:${{ steps.extract_branch_name.outputs.SOURCE_TAG }}
         # build on feature branches, push only on main branch
         push:  true      ###${{ github.ref == 'refs/heads/main' }}
         file: ${{ matrix.DockerFiles }}
