@@ -1,0 +1,20 @@
+name: Build and Push Container Image
+on:
+  create:
+    tags:
+      - 'v*.*.*'
+jobs:
+  build-push:
+    name: Build and Push Container Image
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v3
+    - name: Build and Push
+      uses: stafftastic/docker-build-push-action@main
+      with:
+        name: webapp
+        file: yarn-3.2.0-node-16.14.Dockerfile
+        project: stafftastic
+        repository: base-images
+        serviceAccountKey: ${{secrets.GOOGLE_ARTIFACT_REGISTRY_SA_KEY}}
