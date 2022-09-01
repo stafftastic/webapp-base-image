@@ -5,6 +5,9 @@ on:
       - 'v*.*.*'
 jobs:
   build-push:
+    strategy:
+      matrix:
+        image: ["yarn-3.2.0-node-16.14.Dockerfile", "yarn-3.2.3-node-16.14.Dockerfile"]
     name: Build and Push Container Image
     runs-on: ubuntu-latest
     steps:
@@ -14,7 +17,7 @@ jobs:
       uses: stafftastic/docker-build-push-action@main
       with:
         name: webapp
-        file: yarn-3.2.0-node-16.14.Dockerfile
+        file: ${{ matrix.image }}
         project: stafftastic
         repository: base-images
         serviceAccountKey: ${{secrets.GOOGLE_ARTIFACT_REGISTRY_SA_KEY}}
