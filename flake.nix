@@ -15,7 +15,7 @@
       pkgs = pkgsFor.${system};
     in {
       default = pkgs.dockerTools.buildImage {
-        name = "europe-west3-docker.pkg.dev/stafftastic/images/webapp-base-image";
+        name = "webapp-base-image";
         copyToRoot = pkgs.buildEnv {
           name = "webapp-base";
           paths = with pkgs; [
