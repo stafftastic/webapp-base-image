@@ -10,10 +10,9 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v3
     - name: Build and Push
-      uses: stafftastic/docker-build-push-action@main
+      uses: stafftastic/docker-build-push-action@nix
       with:
         name: webapp
-        file: Dockerfile
         project: stafftastic
         repository: base-images
         serviceAccountKey: ${{secrets.GOOGLE_ARTIFACT_REGISTRY_SA_KEY}}
