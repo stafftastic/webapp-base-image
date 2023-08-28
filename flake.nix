@@ -36,6 +36,9 @@
         config = {
           Entrypoint = [ "/bin/sh" "-c" ];
           WorkingDir = "/app";
+          Env = [
+            "NODE_OPTIONS=--openssl-legacy-provider"
+          ];
         };
       };
     });
