@@ -16,6 +16,7 @@
     in {
       default = pkgs.dockerTools.buildImage {
         name = "webapp-base-image";
+        tag = "local";
         copyToRoot = pkgs.buildEnv {
           name = "webapp-base";
           paths = with pkgs; [
