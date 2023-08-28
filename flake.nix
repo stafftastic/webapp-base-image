@@ -27,7 +27,6 @@
             dockerTools.usrBinEnv
             dockerTools.caCertificates
           ];
-          pathsToLink = [ "/bin" ];
         };
         runAsRoot = ''
           #!/bin/sh
