@@ -24,6 +24,7 @@
             busybox
             curl
             dockerTools.binSh
+            dockerTools.usrBinEnv
             dockerTools.caCertificates
           ];
           pathsToLink = [ "/bin" ];
