@@ -34,7 +34,7 @@
           mkdir -p /app
         '';
         config = {
-          Entrypoint = [ "/bin/sh" ];
+          Entrypoint = [ "/bin/sh" "-c" ];
           WorkingDir = "/app";
         };
       };
