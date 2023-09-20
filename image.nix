@@ -37,8 +37,6 @@ in dockerTools.buildImage {
   config = {
     Cmd = [ "/bin/sh" ];
     WorkingDir = "/app";
-    Env = [
-      "NODE_OPTIONS=--openssl-legacy-provider"
-    ] ++ extraEnv;
+    Env = extraEnv;
   };
 }
