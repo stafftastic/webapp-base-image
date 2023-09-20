@@ -14,33 +14,7 @@
     let
       pkgs = pkgsFor.${system};
     in {
-      default = pkgs.dockerTools.buildImage {
-        name = "webapp-base-image";
-        tag = "local";
-        copyToRoot = pkgs.buildEnv {
-          name = "webapp-base";
-          paths = with pkgs; [
-            nodejs-16_x
-            busybox
-            curl
-            dockerTools.binSh
-            dockerTools.usrBinEnv
-            dockerTools.caCertificates
-          ];
-        };
-        runAsRoot = ''
-          #!/bin/sh
-          corepack enable
-          mkdir -p /app
-        '';
-        config = {
-          Entrypoint = [ "/bin/sh" "-c" ];
-          WorkingDir = "/app";
-          Env = [
-            "NODE_OPTIONS=--openssl-legacy-provider"
-          ];
-        };
-      };
+      default = pkgs.callPackage ./image.nix {};
     });
   };
 }
